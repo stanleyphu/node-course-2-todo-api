@@ -143,10 +143,6 @@ describe('DELETE /todos/:id', () => {
 
 describe('PATCH /todos/:id', () => {
   it('should update the todo', (done) => {
-    // grab id of the first item
-    // update text, set completed true
-    // 200
-    // res body has new text, completed is true, and completedAt is a number (toBeA)
     var hexId = todos[0]._id.toHexString();
 
     request(app)
