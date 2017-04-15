@@ -7,8 +7,8 @@ var UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    minLength: 1,
     trim: true,
+    minlength: 1,
     unique: true,
     validate: {
       validator: validator.isEmail,
@@ -17,8 +17,8 @@ var UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
-    minLength: 6
+    require: true,
+    minlength: 6
   },
   tokens: [{
     access: {
@@ -51,8 +51,23 @@ UserSchema.methods.generateAuthToken = function () {
   });
 };
 
+UserSchema.statics.findByToken = function (token) {
+  var User = this;
+  var decoded;
+
+  try {
+    decoded = jwt.verify(token, 'abc123');
+  } catch (e) {
+    return Promise.reject();
+  }
+
+  return User.findOne({
+    '_id': decoded._id,
+    'tokens.token': token,
+    'tokens.access': 'auth'
+  });
+};
+
 var User = mongoose.model('User', UserSchema);
 
-module.exports = {
-  User
-};
+module.exports = {User}
